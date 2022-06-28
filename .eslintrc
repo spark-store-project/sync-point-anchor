@@ -1,0 +1,11 @@
+{
+  "extends": "think",
+  "rules": {
+    "indent":"off", //["error", 4],
+    "prefer-const":"off",
+    "eqeqeq":"off",
+    "operator-linebreak":"off",
+    "camelcase":"off",
+    "eol-last":"off"
+  }
+}
