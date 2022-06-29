@@ -66,4 +66,11 @@ node production.js
 ```
 然后`Ctrl+alt+D`，回到终端页面，即启动完毕
 
+### 查看日志状态
+
+
+```
+screen -r spark-sync-point-anchor
+```
+退出方法同上
 
