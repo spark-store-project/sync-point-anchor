@@ -91,17 +91,17 @@ https://deepin-community-store.gitee.io/aria2ng
 选择`Aria2NG设置`
 
 
-![输入图片说明](imgs-for-doc%E5%9B%BE%E7%89%87.png)
+![输入图片说明](imgs-for-doc/Aria2NG-settings.png)
 
 
 选择标签页：`RPC`
 
-![输入图片说明](imgs-for-doc%E5%9B%BE%E7%89%87.png)
+![输入图片说明](imgs-for-doc/aria2NG-settings-rpc.png)
 
 将`Aria2 RPC地址`项内容改为`localhost`
 
 改后效果：
 
-![输入图片说明](imgs-for-doc%E5%9B%BE%E7%89%87.png)
+![输入图片说明](imgs-for-doc/aria2NG-settings-rpc-localhost.png)
 
 然后刷新页面即可看到实时状态
