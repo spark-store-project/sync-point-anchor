@@ -1,30 +1,33 @@
-星火p2p下载的控制端，可以用来搭建自己的软件源，目前暂未上线，这个项目可以控制aria2c下载deb源文件同时分享出去
-项目使用nodejs写的启动需要先安装nodejs环境，搭建好node环境后在项目的根目录执行，目前我自己在做源种，我这里的网络环境不好可能会有点慢，甚至不一定能穿透连上
+#### 星火p2p下载的控制端，可以用来搭建自己的软件源，以辅助分发
 
-```
-npm i
-```
-然后临时启动可以使用
-```
-npm start
-```
-或者是
-```
-node development.js
-```
-以上两个都是使用开发环境修改代码后会有热更新
+#### 项目语言：node
 
-生产环境使用
-```
-node production.js
-```
-这三条命令都是只在当前终端，关闭终端就会关闭程序
+> 客户端支持目前暂未上线，计划在3.3后上线
 
-在后台执行可以使用pm2来启动对应的环境文件
-```
-pm2 --name  项目名字   环境文件
-```
-除此之外还需要手动启动aria2c，需要指定rpc端口
+原理是bittorrent，使用aria2c作为做种工具
+
+贡献者可根据此指南简单地为星火商店创建BT加速站，为加快用户的下载速度贡献一份自己的力量！
+
+---
+
+*注意：原理和BT下载相同，需要机器长期启动（家用机器可以用NAS或者树莓派之类的）和一个较好的网络环境。*
+
+*移动宽带或者小品牌宽带可能会有难以穿透的问题导致加速效果很差，使用这些宽带的朋友就不建议使用了*
+
+*BitTorrent下载或者PT的朋友应该会更熟悉*
+
+---
+## 搭建指南
+
+### 准备阶段
+
+搭建环境：`sudo apt install nodejs npm git aria2c screen`
+
+获取仓库：`git clone https://gitee.com/deepin-community-store/sync-point-anchor `
+
+进入仓库，然后执行`npm -i`即可完成准备
+
+### 配置阶段
 
 项目的配置文件在根目录的config.json保存
 ```
@@ -36,4 +39,31 @@ pm2 --name  项目名字   环境文件
 }
 
 ```
+需要配置的选项：
+* `target_path` 请把软件包保存目录填写到后面的引号中。最小可用空间大小：140G
+
+高级配置项：
+
+* `aria2c_rpc`
+* `aria2c_host`
+
+对于普通用户，保持默认即可
+
+### 启动阶段
+```bash
+aria2c -D --enable-rpc=true --rpc-listen-all=true --rpc-listen-port=6800 --rpc-allow-origin-all=true --continue=true --check-integrity=true --bt-enable-lpd=true --enable-dht=true --listen-port=6881 --dht-listen-port=6881 --seed-ratio=0 --bt-max-open-files=9999999 --enable-peer-exchange=true --bt-max-peers=9999999 --max-concurrent-downloads=999999
+```
+启动aria2 服务
+
+
+```
+screen -S spark-sync-point-anchor
+```
+输入后按回车，然后输入
+```
+node production.js
+
+```
+然后`Ctrl+alt+D`，回到终端页面，即启动完毕
+
 
