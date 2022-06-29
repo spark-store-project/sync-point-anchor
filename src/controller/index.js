@@ -26,10 +26,8 @@ module.exports = class extends Base {
         let data = null;
         if (think.config('torrent_name').indexOf('http') != -1) {
             // 用axios从网络下载
-            let { data: remoteData } = await axios({ url: think.config('torrent_name'), responseType: 'arraybuffer' }).catch(e=>{return false;});
-            if(think.isEmpty(remoteData)){
-                continue;
-            }
+            let { data: remoteData } = await axios({ url: think.config('torrent_name'), responseType: 'arraybuffer' });
+
             data = JSON.parse(remoteData);
         } else {
             // 读取项目目录的文件
