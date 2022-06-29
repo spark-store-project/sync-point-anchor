@@ -88,7 +88,7 @@ https://deepin-community-store.gitee.io/aria2ng
 
 进入后
 
-选择`Aria2NG设置`
+选择`AriaNG设置`
 
 
 ![输入图片说明](imgs-for-doc/Aria2NG-settings.png)
