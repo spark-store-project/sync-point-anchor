@@ -26,7 +26,10 @@ module.exports = class extends Base {
         let data = null;
         if (think.config('torrent_name').indexOf('http') != -1) {
             // 用axios从网络下载
-            let { data: remoteData } = await axios({ url: think.config('torrent_name'), responseType: 'arraybuffer' });
+            let { data: remoteData } = await axios({ url: think.config('torrent_name'), responseType: 'arraybuffer' }).catch(e=>{return false;});
+            if(think.isEmpty(remoteData)){
+                continue;
+            }
             data = JSON.parse(remoteData);
         } else {
             // 读取项目目录的文件
@@ -53,7 +56,7 @@ module.exports = class extends Base {
             let downloadPath = path.join(think.config('target_path'), fileDirName);
             think.logger.info('调用aria2下载', result);
             await aria2cClient.call('aria2.addTorrent', Buffer.from(torrentData).toString('base64'), [], { dir: downloadPath });
-            think.logger.info('调用aria2完成');
+            think.logger.info('调用aria2完成，目标路径：',downloadPath);
         }
     }
     async _checkAria2c() {
