@@ -50,20 +50,28 @@
 对于普通用户，保持默认即可
 
 ### 启动阶段
+
+#### 启动aria2 服务
 ```bash
 aria2c -D --enable-rpc=true --rpc-listen-all=true --rpc-listen-port=6800 --rpc-allow-origin-all=true --continue=true --check-integrity=true --bt-enable-lpd=true --enable-dht=true --listen-port=6881 --dht-listen-port=6881 --seed-ratio=0 --bt-max-open-files=9999999 --enable-peer-exchange=true --bt-max-peers=9999999 --max-concurrent-downloads=999999
 ```
-启动aria2 服务
 
+#### 启动工具进程
 
 ```
 screen -S spark-sync-point-anchor
 ```
+启动screen
+
 然后输入
 ```
 node production.js
 
 ```
+
+打开工具
+
+
 然后`Ctrl+alt+D`，回到终端页面，即启动完毕
 
 ### 查看日志状态
