@@ -50,7 +50,6 @@ module.exports = class extends Base {
                 }
                 torrentData = fs.readFileSync(result);
             }
-            think.logger.info(torrentData);
             let torrentInfo = parseTorrent(torrentData);
             if (infoHashList.includes(torrentInfo.infoHash)) continue;
             let fileDirName = path.basename(torrentInfo.name, path.extname(torrentInfo.name));
