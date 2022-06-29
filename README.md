@@ -59,7 +59,7 @@ aria2c -D --enable-rpc=true --rpc-listen-all=true --rpc-listen-port=6800 --rpc-a
 ```
 screen -S spark-sync-point-anchor
 ```
-输入后按回车，然后输入
+然后输入
 ```
 node production.js
 
