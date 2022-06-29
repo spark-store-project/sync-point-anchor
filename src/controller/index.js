@@ -41,7 +41,8 @@ module.exports = class extends Base {
             if (!result.includes('.deb.torrent')) continue;
             let torrentData = null;
             if (result.indexOf('http') != -1) {
-                let { data: remoteTorrentData } = await axios({ url: result, responseType: 'arraybuffer' });
+                let { data: remoteTorrentData } = await axios({ url: result, responseType: 'arraybuffer' }).catch(e=>{return false;});
+                if(think.isEmpty(remoteTorrentData))continue;
                 torrentData = remoteTorrentData;
             } else {
                 if (!think.isExist(result)) {
