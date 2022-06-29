@@ -72,7 +72,9 @@ node production.js
 打开工具
 
 
-然后`Ctrl+alt+D`，回到终端页面，即启动完毕
+然后`Ctrl+alt+D`，回到终端页面
+
+执行`curl http://127.0.0.1:8360`后即启动完毕
 
 ### 查看日志状态
 
