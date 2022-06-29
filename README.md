@@ -74,3 +74,26 @@ screen -r spark-sync-point-anchor
 ```
 退出方法同上
 
+### 查看做种和下载状态
+
+https://deepin-community-store.gitee.io/aria2ng
+
+进入后
+
+选择`Aria2NG设置`
+
+
+![输入图片说明](imgs-for-doc%E5%9B%BE%E7%89%87.png)
+
+
+选择标签页：`RPC`
+
+![输入图片说明](imgs-for-doc%E5%9B%BE%E7%89%87.png)
+
+将`Aria2 RPC地址`项内容改为`localhost`
+
+改后效果：
+
+![输入图片说明](imgs-for-doc%E5%9B%BE%E7%89%87.png)
+
+然后刷新页面即可看到实时状态
