@@ -25,7 +25,7 @@
 
 获取仓库：`git clone https://gitee.com/deepin-community-store/sync-point-anchor `
 
-进入仓库，然后执行`npm -i`即可完成准备
+进入仓库，然后执行`npm i`即可完成准备
 
 ### 配置阶段
 
