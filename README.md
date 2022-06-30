@@ -21,7 +21,7 @@
 
 ### 准备阶段
 
-搭建环境：`sudo apt install nodejs npm git aria2c screen`
+搭建环境：`sudo apt install nodejs npm git aria2 screen`
 
 获取仓库：`git clone https://gitee.com/deepin-community-store/sync-point-anchor `
 
