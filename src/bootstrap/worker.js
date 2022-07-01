@@ -6,10 +6,9 @@ function getConfig() {
     // let that = this;
     let configFilePath = path.join(think.ROOT_PATH, 'config.json');
     let configData = JSON.parse(fs.readFileSync(configFilePath));
-    think.config('aria2c_rpc', configData.aria2c_rpc);
-    think.config('aria2c_host', configData.aria2c_host);
-    think.config('torrent_name', configData.torrent_name);
-    think.config('target_path', configData.target_path);
+    for (let item in configData) {
+        think.config(item, configData[item]);
+    }
 }
 think.beforeStartServer(() => {
     getConfig();
