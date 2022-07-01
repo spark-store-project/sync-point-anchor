@@ -65,6 +65,7 @@ screen -S spark-sync-point-anchor
 
 然后输入
 ```
+node run compile
 node production.js
 
 ```
