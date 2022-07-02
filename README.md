@@ -53,7 +53,7 @@
 
 #### 启动aria2 服务
 ```bash
-aria2c -D --enable-rpc=true --rpc-listen-all=true --rpc-listen-port=6800 --rpc-allow-origin-all=true --continue=true --check-integrity=true --bt-enable-lpd=true --enable-dht=true --listen-port=6881 --dht-listen-port=6881 --seed-ratio=0 --bt-max-open-files=9999999 --enable-peer-exchange=true --bt-max-peers=9999999 --max-concurrent-downloads=999999
+aria2c -D --enable-rpc=true --rpc-listen-all=true --rpc-listen-port=6800 --rpc-allow-origin-all=true --continue=true --check-integrity=true --bt-enable-lpd=true --enable-dht=true --listen-port=6881 --dht-listen-port=6882 --seed-ratio=0 --bt-max-open-files=9999999 --enable-peer-exchange=true --bt-max-peers=9999999 --max-concurrent-downloads=999999 --no-file-allocation-limit=0
 ```
 
 #### 启动工具进程
