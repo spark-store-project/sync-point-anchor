@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const parseTorrent = require('parse-torrent');
-let aria2cClient = {};
+let aria2cClientConn = {};
 const _checkAria2c = Symbol('_checkAria2c');
 module.exports = class extends Base {
     base64Encode(file) {
@@ -17,7 +17,7 @@ module.exports = class extends Base {
     async indexAction() {
         let that = this;
         think.logger.info('连接aria2');
-        that._checkAria2c();
+        let aria2cClient = await that[_checkAria2c]();
         let existResult = await aria2cClient.tellActive();
         let infoHashList = [];
         for (let item of existResult) {
@@ -59,16 +59,17 @@ module.exports = class extends Base {
             think.logger.info('调用aria2完成，目标路径：', downloadPath);
         }
     }
-    async _checkAria2c() {
+    async [_checkAria2c]() {
         let aria2AddressPool = think.config('aria2c_host_pool');
         const wrr = new LBA.WeightedRoundRobin(aria2AddressPool);
         let aria2Address = wrr.pick();
+        think.logger.info(aria2Address);
         const md5 = think.md5(JSON.stringify(think.omit(aria2Address, 'weight')));
-        if (!aria2cClient[md5]) {
-            aria2cClient[md5] = new Aria2({
-                url: `http://${aria2Address.host}:${aria2Address.port}/jsonrpc`
+        if (!aria2cClientConn[md5]) {
+            aria2cClientConn[md5] = new Aria2({
+                url: `http://${aria2Address.host}/jsonrpc`
             });
         }
-        return aria2cClient[md5];
+        return aria2cClientConn[md5];
     }
 };
