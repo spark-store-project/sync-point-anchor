@@ -2,5 +2,8 @@
     "torrent_name": "http://d.store.deepinos.org.cn/store/torrent.json",
     "aria2c_rpc": 6800,
     "aria2c_host": "127.0.0.1",
+    "aria2c_host_pool": [
+        { "host": "127.0.0.1", "port": 6800, "weight": 1 }
+    ],
     "target_path": ""
 }

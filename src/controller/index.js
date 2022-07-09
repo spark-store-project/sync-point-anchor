@@ -1,10 +1,12 @@
 const Base = require('./base.js');
 const Aria2 = require('aria2c');
+import LBA from 'load-balancer-algorithm';
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const parseTorrent = require('parse-torrent');
-let aria2cClient = null;
+let aria2cClient = {};
+const _checkAria2c = Symbol('_checkAria2c');
 module.exports = class extends Base {
     base64Encode(file) {
         // read binary data
@@ -39,8 +41,8 @@ module.exports = class extends Base {
             if (!result.includes('.deb.torrent')) continue;
             let torrentData = null;
             if (result.indexOf('http') != -1) {
-                let { data: remoteTorrentData } = await axios({ url: result, responseType: 'arraybuffer' }).catch(e=>{return false;});
-                if(think.isEmpty(remoteTorrentData))continue;
+                let { data: remoteTorrentData } = await axios({ url: result, responseType: 'arraybuffer' }).catch(e => { return false; });
+                if (think.isEmpty(remoteTorrentData)) continue;
                 torrentData = remoteTorrentData;
             } else {
                 if (!think.isExist(result)) {
@@ -54,14 +56,19 @@ module.exports = class extends Base {
             let downloadPath = path.join(think.config('target_path'), fileDirName);
             think.logger.info('调用aria2下载', result);
             await aria2cClient.call('aria2.addTorrent', Buffer.from(torrentData).toString('base64'), [], { dir: downloadPath });
-            think.logger.info('调用aria2完成，目标路径：',downloadPath);
+            think.logger.info('调用aria2完成，目标路径：', downloadPath);
         }
     }
     async _checkAria2c() {
-        if (think.isEmpty(aria2cClient)) {
-            aria2cClient = new Aria2({
-                url: `http://${think.config('aria2c_host')}:${think.config('aria2c_rpc')}/jsonrpc`
+        let aria2AddressPool = think.config('aria2c_host_pool');
+        const wrr = new LBA.WeightedRoundRobin(aria2AddressPool);
+        let aria2Address = wrr.pick();
+        const md5 = think.md5(JSON.stringify(think.omit(aria2Address, 'weight')));
+        if (!aria2cClient[md5]) {
+            aria2cClient[md5] = new Aria2({
+                url: `http://${aria2Address.host}:${aria2Address.port}/jsonrpc`
             });
         }
+        return aria2cClient[md5];
     }
 };

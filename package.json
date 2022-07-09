@@ -13,6 +13,7 @@
     "dependencies": {
         "aria2c": "0.0.5",
         "axios": "^0.26.1",
+        "load-balancer-algorithm": "^1.0.4",
         "parse-torrent": "^9.1.5",
         "think-logger3": "^1.0.0",
         "think-session": "^1.0.0",
