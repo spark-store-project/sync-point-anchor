@@ -1,11 +1,11 @@
 const Base = require('./base.js');
 const Aria2 = require('aria2c');
-import LBA from 'load-balancer-algorithm';
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const parseTorrent = require('parse-torrent');
 let aria2cClientConn = {};
+let existResultCache = {};
 const _checkAria2c = Symbol('_checkAria2c');
 module.exports = class extends Base {
     base64Encode(file) {
@@ -16,14 +16,7 @@ module.exports = class extends Base {
     }
     async indexAction() {
         let that = this;
-        think.logger.info('连接aria2');
-        let aria2cClient = await that[_checkAria2c]();
-        let existResult = await aria2cClient.tellActive();
-        let infoHashList = [];
-        for (let item of existResult) {
-            if (think.isEmpty(item.bittorrent)) continue;
-            infoHashList.push(item.infoHash);
-        }
+
         think.logger.info('开始遍历');
         let data = null;
         if (think.config('torrent_name').indexOf('http') != -1) {
@@ -51,7 +44,21 @@ module.exports = class extends Base {
                 torrentData = fs.readFileSync(result);
             }
             let torrentInfo = parseTorrent(torrentData);
-            if (infoHashList.includes(torrentInfo.infoHash)) continue;
+            think.logger.info('连接aria2');
+            think.logger.info(think.config('aria2c_host_pool'));
+            let mod = parseInt(torrentInfo.infoHash, 16) % think.config('aria2c_host_pool').length;
+            think.logger.info('取模：', mod);
+            let aria2cClient = await that[_checkAria2c](mod);
+            if (think.isEmpty(existResultCache[mod])) {
+                existResultCache[mod] = [];
+                think.logger.info('开始增加缓存：', mod);
+                let existResult = await aria2cClient.tellActive();
+                for (let item of existResult) {
+                    if (think.isEmpty(item.bittorrent)) continue;
+                    existResultCache[mod].push(item.infoHash);
+                }
+            }
+            if (existResultCache[mod].includes(torrentInfo.infoHash)) continue;
             let fileDirName = path.basename(torrentInfo.name, path.extname(torrentInfo.name));
             let downloadPath = path.join(think.config('target_path'), fileDirName);
             think.logger.info('调用aria2下载', result);
@@ -59,15 +66,12 @@ module.exports = class extends Base {
             think.logger.info('调用aria2完成，目标路径：', downloadPath);
         }
     }
-    async [_checkAria2c]() {
-        let aria2AddressPool = think.config('aria2c_host_pool');
-        const wrr = new LBA.WeightedRoundRobin(aria2AddressPool);
-        let aria2Address = wrr.pick();
-        think.logger.info(aria2Address);
+    async [_checkAria2c](index) {
+        let aria2Address = think.config('aria2c_host_pool')[index];
         const md5 = think.md5(JSON.stringify(think.omit(aria2Address, 'weight')));
         if (!aria2cClientConn[md5]) {
             aria2cClientConn[md5] = new Aria2({
-                url: `http://${aria2Address.host}/jsonrpc`
+                url: `http://${aria2Address.host}:${aria2Address.port}/jsonrpc`
             });
         }
         return aria2cClientConn[md5];
