@@ -2,6 +2,7 @@ let aria2cClientConn = {};
 const Aria2 = require('aria2c');
 const getInface = Symbol('getInface');
 let currentConn = null;
+const fs = require('fs');
 module.exports = class extends think.Service {
     getConn(index) {
         let that = this;
@@ -26,11 +27,12 @@ module.exports = class extends think.Service {
         let existResult = await currentConn.tellActive();
         return existResult;
     }
-    async addTorrent(torrentFileData, downloadPath) {
+    async addTorrent(torrentFile, downloadPath) {
         if (think.isEmpty(currentConn)) {
             let errorMsg = { msg: '连接不存在' };
             throw errorMsg;
         }
-        await currentConn.call('aria2.addTorrent', torrentFileData, [], { dir: downloadPath });
+        let torrentData = fs.readFileSync(torrentFile);
+        await currentConn.call('aria2.addTorrent', Buffer.from(torrentData).toString('base64'), [], { dir: downloadPath });
     }
 };

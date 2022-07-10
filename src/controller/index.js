@@ -28,17 +28,18 @@ module.exports = class extends Base {
         let torrentDownloadService = think.service('aria2');
         for (const result of walker) {
             if (!result.includes('.deb.torrent')) continue;
-            let torrentData = null;
+            let localTorrent = result;
             if (result.indexOf('http') != -1) {
                 let { data: remoteTorrentData } = await axios({ url: result, responseType: 'arraybuffer' }).catch(e => { return false; });
                 if (think.isEmpty(remoteTorrentData)) continue;
-                torrentData = remoteTorrentData;
-            } else {
-                if (!think.isExist(result)) {
-                    continue;
-                }
-                torrentData = fs.readFileSync(result);
+                let fileName = `${think.uuid().replace(/-/g, '')}.torrent`; // 重新生成一个本地随机的名字
+                localTorrent = path.join('/tmp', fileName);
+                fs.writeFileSync(localTorrent, remoteTorrentData);
             }
+            if (!think.isExist(localTorrent)) {
+                continue;
+            }
+            let torrentData = fs.readFileSync(localTorrent);
             let torrentInfo = parseTorrent(torrentData);
             think.logger.info('连接aria2');
             think.logger.info(think.config('aria2c_host_pool'));
@@ -58,7 +59,7 @@ module.exports = class extends Base {
             let fileDirName = path.basename(torrentInfo.name, path.extname(torrentInfo.name));
             let downloadPath = path.join(think.config('target_path'), fileDirName);
             think.logger.info('调用aria2下载', result);
-            await torrentDownloadService.addTorrent(Buffer.from(torrentData).toString('base64'), downloadPath);
+            await torrentDownloadService.addTorrent(localTorrent, downloadPath);
             think.logger.info('调用aria2完成，目标路径：', downloadPath);
         }
     }
