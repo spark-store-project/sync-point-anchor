@@ -4,6 +4,7 @@ const path = require('path');
 const axios = require('axios');
 const parseTorrent = require('parse-torrent');
 let existResultCache = {};
+const serviceName = 'qbittorrent';
 module.exports = class extends Base {
     base64Encode(file) {
         // read binary data
@@ -25,7 +26,7 @@ module.exports = class extends Base {
         }
         let walker = data;
         think.logger.info('结束遍历');
-        let torrentDownloadService = think.service('aria2');
+        let torrentDownloadService = think.service(serviceName);
         for (const result of walker) {
             if (!result.includes('.deb.torrent')) continue;
             let localTorrent = result;
@@ -41,8 +42,7 @@ module.exports = class extends Base {
             }
             let torrentData = fs.readFileSync(localTorrent);
             let torrentInfo = parseTorrent(torrentData);
-            think.logger.info('连接aria2');
-            think.logger.info(think.config('aria2c_host_pool'));
+            think.logger.info('连接');
             let mod = parseInt(torrentInfo.infoHash, 16) % think.config('aria2c_host_pool').length;
             think.logger.info('取模：', mod);
             await torrentDownloadService.getConn(mod);
@@ -51,7 +51,7 @@ module.exports = class extends Base {
                 think.logger.info('开始增加缓存：', mod);
                 let existResult = await torrentDownloadService.getAllTask();
                 for (let item of existResult) {
-                    if (think.isEmpty(item.bittorrent)) continue;
+                    if (think.isEmpty(item.infoHash)) continue;
                     existResultCache[mod].push(item.infoHash);
                 }
             }

@@ -5,5 +5,8 @@
     "aria2c_host_pool": [
         { "host": "127.0.0.1", "port": 6800 }
     ],
+    "qbittorrent_host_pool": [
+        { "host": "127.0.0.1", "port": 8080, "username": "admin", "password": "adminadmin" }
+    ],
     "target_path": ""
 }
