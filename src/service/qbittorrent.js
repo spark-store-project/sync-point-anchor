@@ -26,7 +26,7 @@ module.exports = class extends think.Service {
             let errorMsg = { msg: '连接不存在' };
             throw errorMsg;
         }
-        let existResult = await that.request('/torrents/info', { filter: 'downloading' });
+        let existResult = await that.request('/torrents/info', {});
         for (let item of existResult) {
             item.infoHash = item.hash;
         }
@@ -67,7 +67,6 @@ module.exports = class extends think.Service {
         }
 
         let axiosdata = await axios({ url: url, method: method, headers: Object.assign({ 'Cookie': currentCookie }, headers), data: data });
-        think.logger.info(axiosdata);
         return axiosdata.data;
     }
     async getCookie() {
