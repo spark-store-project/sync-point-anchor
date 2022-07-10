@@ -1,5 +1,4 @@
 let clientConn = {};
-const qbittorrent = require('qbittorrent-api-v2');
 const noderequest = require('request');
 const getInface = Symbol('getInface');
 const fs = require('fs');
