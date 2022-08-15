@@ -91,7 +91,7 @@ screen -r spark-sync-point-anchor
 
 ### 查看做种和下载状态
 
-https://deepin-community-store.gitee.io/aria2ng
+https://aria2ng.github.io/
 
 进入后
 
@@ -105,7 +105,7 @@ https://deepin-community-store.gitee.io/aria2ng
 
 ![输入图片说明](imgs-for-doc/aria2NG-settings-rpc.png)
 
-将`Aria2 RPC地址`项内容改为`localhost`
+将`Aria2 RPC地址`项内容改为`localhost`（这里是本地做种时的设置，若为远程做种，请设置对应的ip或域名。确保6800端口开启）
 
 改后效果：
 
